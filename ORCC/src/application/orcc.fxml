@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+	
+<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="application.OrccController">
+	<MenuBar>
+		<menus>
+			<Menu text="Settings">
+				<items>
+					<MenuItem text="Server URL"/>
+				</items>
+			</Menu>
+		</menus>
+	</MenuBar>
+</BorderPane>

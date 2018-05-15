@@ -41,26 +41,6 @@ public class OrccController implements Initializable {
 	 * Enter the Openhab server URL in a modal dialog
 	 * @param event
 	 */
-	private void enterServerUrl2(ActionEvent event) {
-		Stage dialog = new Stage();
-		Scene root;
-		try {
-			root = FXMLLoader.load(getClass().getResource("serverUrlDialog.fxml"));
-			dialog.setScene(root);
-			dialog.setTitle("Enter Openhab Server URL");
-			dialog.initModality(Modality.WINDOW_MODAL);
-			dialog.initOwner(mainPane.getScene().getWindow() );
-			dialog.show();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * Enter the Openhab server URL in a modal dialog
-	 * @param event
-	 */
 	@FXML
 	private void enterServerUrl(ActionEvent event) {
 		TextInputDialog serverUrlDialog = new TextInputDialog();

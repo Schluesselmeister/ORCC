@@ -4,15 +4,29 @@
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-	
-<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="application.OrccController">
-	<MenuBar>
-		<menus>
-			<Menu text="Settings">
-				<items>
-					<MenuItem text="Server URL"/>
-				</items>
-			</Menu>
-		</menus>
-	</MenuBar>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuItem?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="application.OrccController" fx:id="mainPane">
+	<top>
+		<MenuBar fx:id="menuBar">
+			<menus>
+				<Menu text="Connection">
+					<items>
+						<MenuItem text="Connect" />
+					</items>
+				</Menu>
+				<Menu text="Settings">
+					<items>
+						<MenuItem text="Server URL" onAction="#enterServerUrl"/>
+					</items>
+				</Menu>
+				<Menu text="Help">
+					<items>
+						<MenuItem text="About" />
+					</items>
+				</Menu>
+			</menus>
+		</MenuBar>
+	</top>
 </BorderPane>

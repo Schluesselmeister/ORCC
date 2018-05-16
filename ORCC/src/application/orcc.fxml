@@ -13,7 +13,7 @@
 			<menus>
 				<Menu text="Connection">
 					<items>
-						<MenuItem text="Connect" />
+						<MenuItem text="Connect" onAction="#connectToServer"/>
 					</items>
 				</Menu>
 				<Menu text="Settings">

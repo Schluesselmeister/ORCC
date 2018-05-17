@@ -1,0 +1,73 @@
+{
+  "version": "0.10.0.b1",
+  "links": [
+    {
+      "type": "uuid",
+      "url": "http://demo.openhab.org:8080/rest/uuid"
+    },
+    {
+      "type": "bindings",
+      "url": "http://demo.openhab.org:8080/rest/bindings"
+    },
+    {
+      "type": "channel-types",
+      "url": "http://demo.openhab.org:8080/rest/channel-types"
+    },
+    {
+      "type": "config-descriptions",
+      "url": "http://demo.openhab.org:8080/rest/config-descriptions"
+    },
+    {
+      "type": "discovery",
+      "url": "http://demo.openhab.org:8080/rest/discovery"
+    },
+    {
+      "type": "inbox",
+      "url": "http://demo.openhab.org:8080/rest/inbox"
+    },
+    {
+      "type": "extensions",
+      "url": "http://demo.openhab.org:8080/rest/extensions"
+    },
+    {
+      "type": "items",
+      "url": "http://demo.openhab.org:8080/rest/items"
+    },
+    {
+      "type": "links",
+      "url": "http://demo.openhab.org:8080/rest/links"
+    },
+    {
+      "type": "persistence",
+      "url": "http://demo.openhab.org:8080/rest/persistence"
+    },
+    {
+      "type": "services",
+      "url": "http://demo.openhab.org:8080/rest/services"
+    },
+    {
+      "type": "things",
+      "url": "http://demo.openhab.org:8080/rest/things"
+    },
+    {
+      "type": "thing-types",
+      "url": "http://demo.openhab.org:8080/rest/thing-types"
+    },
+    {
+      "type": "sitemaps",
+      "url": "http://demo.openhab.org:8080/rest/sitemaps"
+    },
+    {
+      "type": "voice",
+      "url": "http://demo.openhab.org:8080/rest/voice"
+    },
+    {
+      "type": "iconsets",
+      "url": "http://demo.openhab.org:8080/rest/iconsets"
+    },
+    {
+      "type": "habpanel",
+      "url": "http://demo.openhab.org:8080/rest/habpanel"
+    }
+  ]
+}

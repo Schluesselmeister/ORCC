@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 
+import application.FakeInterceptor;
+import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -21,28 +23,49 @@ import retrofit2.http.GET;
  */
 public class RestHandler {
 	
-	private URL serverUrl;
-	
+	/**
+	 * The retrofit object used for JSON coded answers. 
+	 */
 	Retrofit jsonRetrofit;
+	
+	/**
+	 * The retrofit object used for plain text answers.
+	 */
 	Retrofit textRetrofit;
 	
+	/**
+	 * Service used for JSON coded answers.
+	 */
 	private final OpenhabJsonService openhabJsonService;
+	
+	/**
+	 * Service used for plain text answers.
+	 */
 	private final OpenhabTextService openhabTextService;
 	
-	
+	/**
+	 * Definition of all REST services returning JSON data. 
+	 * @author Sven Rehfuﬂ
+	 */
 	protected interface OpenhabJsonService {
-		@GET("/items") Call<List<RestItem>> getAllItems();
+		@GET("items") Call<List<RestItem>> getAllItems();
 	}
 	
+	/**
+	 * Definition of all REST services returning plain text data. 
+	 * @author Sven Rehfuﬂ
+	 */
 	protected interface OpenhabTextService {
-		@GET("/uuid") Call<String> getUuid();
+		@GET("uuid") Call<String> getUuid();
 	}
 	
 	
-	public RestHandler(URL serverUrl) {
-		this.serverUrl = serverUrl;
-		Retrofit jsonRetrofit = new Retrofit.Builder().addConverterFactory(GsonConverterFactory.create()).baseUrl(serverUrl.toString()).build();
-		Retrofit textRetrofit = new Retrofit.Builder().addConverterFactory(ScalarsConverterFactory.create()).baseUrl(serverUrl.toString()).build();
+	public RestHandler(String serverUrl) {
+		
+		OkHttpClient client = new OkHttpClient.Builder().addInterceptor(new FakeInterceptor()).build();
+		
+		Retrofit jsonRetrofit = new Retrofit.Builder().addConverterFactory(GsonConverterFactory.create()).baseUrl(serverUrl).client(client).build();
+		Retrofit textRetrofit = new Retrofit.Builder().addConverterFactory(ScalarsConverterFactory.create()).baseUrl(serverUrl).client(client).build();
 
 		openhabJsonService = jsonRetrofit.create(OpenhabJsonService.class);
 		openhabTextService = textRetrofit.create(OpenhabTextService.class);
@@ -55,22 +78,27 @@ public class RestHandler {
 		Call<String> call = openhabTextService.getUuid();
 		
 		try {
-			if (call.execute().isSuccessful()) {
+			Response<String> callResponse = call.execute();
+			if (callResponse.isSuccessful()) {
 				retVal = true;
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
+			System.out.println(e.getMessage());
 		}
 		
 		return retVal;
 	}
 	
-	public void getAllItems() throws Exception {
+	public List<RestItem> getAllItems() throws Exception {
+		Call<List<RestItem>> allItemsCall = openhabJsonService.getAllItems();
 		
-		
+		Response<List<RestItem>> callResponse;
+			callResponse = allItemsCall.execute();
+			if (callResponse.isSuccessful() == false) {
+				throw new Exception("Unknow error, but the response was unseccessful.");
+			}
+			
+			return callResponse.body();
 	}
-	
-	
-	
-
 }

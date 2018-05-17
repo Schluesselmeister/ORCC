@@ -1,32 +1,26 @@
 package application;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Cursor;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.TreeView;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
-import javafx.stage.Stage;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import nz.net.ultraq.preferences.xml.XmlPreferences;
 import nz.net.ultraq.preferences.xml.XmlPreferencesFile;
 import openhab.RestHandler;
+import openhab.RestItem;
 
 public class OrccController implements Initializable {
 	@FXML
@@ -35,10 +29,13 @@ public class OrccController implements Initializable {
 	@FXML
 	private BorderPane mainPane;
 	
+	@FXML
+	private TreeView navTree;
+	
 	/**
 	 * The Openhab server address.
 	 */
-	private URL serverUrl = null;
+	private String serverUrl;
 	
 	/**
 	 * The preferences like server URL.
@@ -50,10 +47,20 @@ public class OrccController implements Initializable {
 	 */
 	private boolean isConnected = false;
 	
+	/**
+	 * The worker thread for long operations.
+	 */
 	Thread workerThread;
 	
+	/**
+	 * The rest handler to get the rest objects as POJO.
+	 */
 	private RestHandler restHandler;
 	
+	/**
+	 * The list of all Openhab items.
+	 */
+	List<RestItem> allItems;
 	
 	/**
 	 * Enter the Openhab server URL in a modal dialog
@@ -71,15 +78,20 @@ public class OrccController implements Initializable {
 
 		Optional<String> local_serverUrl = serverUrlDialog.showAndWait();
 		if (local_serverUrl.isPresent()) {
-			preferences.put(Constants.ServerUrlPref, local_serverUrl.get());	
+			preferences.put(Constants.ServerUrlPref, local_serverUrl.get());
+			preferences.flush();
+			serverUrl = local_serverUrl.get();
 		}
 	}
 	
+	/**
+	 * Handler for connect button. Connect to the server and download the list of all Openhab items.
+	 */
 	@FXML
 	private void connectToServer() {
 		mainPane.setCursor(Cursor.WAIT);
 
-		Task myTask = new Task<Void>() {
+		Task<Void> myTask = new Task<Void>() {
 			@Override
 			protected Void call() throws Exception {
 				if (restHandler.canConnect() == false) {
@@ -98,8 +110,31 @@ public class OrccController implements Initializable {
 						}
 					});
 				} else {
-					mainPane.setCursor(Cursor.DEFAULT);
 					isConnected = true;
+
+					try {
+						allItems = restHandler.getAllItems(); 
+						Platform.runLater(new Runnable() {
+							@Override
+							public void run() {
+								mainPane.setCursor(Cursor.DEFAULT);
+							}
+						});
+					} catch (Exception ex) {
+						isConnected = false;
+						Platform.runLater(new Runnable() {
+							@Override
+							public void run() {
+								mainPane.setCursor(Cursor.DEFAULT);
+								Alert alertDialog = new Alert(AlertType.ERROR);
+								alertDialog.setHeaderText(null);
+								alertDialog.setTitle("Connection Error");
+								alertDialog.setContentText("Cannot download the list of items. \r\n" + ex.getMessage());
+								alertDialog.initModality(Modality.WINDOW_MODAL);
+								alertDialog.showAndWait();
+							}
+						});
+					}
 				}
 				return null;
 			}
@@ -112,16 +147,9 @@ public class OrccController implements Initializable {
 	@Override
 	public void initialize(java.net.URL arg0, ResourceBundle arg1) {
 		menuBar.setFocusTraversable(true);
-		preferences = new XmlPreferences(new XmlPreferencesFile("settings.xml"));
+		preferences = new XmlPreferences(new XmlPreferencesFile("settings"));
 		String serverUrl = preferences.get(Constants.ServerUrlPref,"http://localhost:8080/rest/");
-		try {
-			this.serverUrl = new URL(serverUrl);
-			restHandler = new RestHandler(this.serverUrl);
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			this.serverUrl = null;
-		}
-		
+		this.serverUrl = serverUrl;
+		restHandler = new RestHandler(this.serverUrl);
 	}   
 }

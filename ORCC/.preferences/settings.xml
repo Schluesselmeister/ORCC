@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<preferences name="" xmlns="http://www.ultraq.net.nz/preferences/xml">
+    <entries>
+        <entry key="server_url">
+            <value>http://demo.openhab.org:8080/rest/</value>
+        </entry>
+    </entries>
+</preferences>

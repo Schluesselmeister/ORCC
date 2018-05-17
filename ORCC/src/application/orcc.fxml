@@ -29,4 +29,7 @@
 			</menus>
 		</MenuBar>
 	</top>
+	<left>
+		<TreeView fx:id="navTree" layoutX="0" layoutY="0" prefHeight="193.0" prefWidth="471.0" />
+	</left>
 </BorderPane>

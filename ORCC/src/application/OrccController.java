@@ -1,24 +1,29 @@
 package application;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+import application.treetable.TreeTableHandler;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Cursor;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.TreeTableView;
 import javafx.scene.control.TreeView;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import nz.net.ultraq.preferences.xml.XmlPreferences;
 import nz.net.ultraq.preferences.xml.XmlPreferencesFile;
+import openhab.OpenhabItem;
 import openhab.RestHandler;
 import openhab.RestItem;
 
@@ -30,7 +35,10 @@ public class OrccController implements Initializable {
 	private BorderPane mainPane;
 	
 	@FXML
-	private TreeView navTree;
+	private TreeView controlTree;
+	
+	@FXML
+	private TreeTableView<OpenhabItem> navTree;
 	
 	/**
 	 * The Openhab server address.
@@ -58,9 +66,14 @@ public class OrccController implements Initializable {
 	private RestHandler restHandler;
 	
 	/**
+	 * Handler for the tree table view.
+	 */
+	private TreeTableHandler treeTableHandler;
+	
+	/**
 	 * The list of all Openhab items.
 	 */
-	List<RestItem> allItems;
+	ObservableList<OpenhabItem> allItems;
 	
 	/**
 	 * Enter the Openhab server URL in a modal dialog
@@ -113,10 +126,11 @@ public class OrccController implements Initializable {
 					isConnected = true;
 
 					try {
-						allItems = restHandler.getAllItems(); 
+						allItems = restHandler.getAllItems();
 						Platform.runLater(new Runnable() {
 							@Override
 							public void run() {
+								treeTableHandler = new TreeTableHandler(navTree, allItems); 
 								mainPane.setCursor(Cursor.DEFAULT);
 							}
 						});

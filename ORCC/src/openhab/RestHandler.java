@@ -5,9 +5,12 @@ package openhab;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 import application.FakeInterceptor;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -18,7 +21,7 @@ import retrofit2.converter.scalars.ScalarsConverterFactory;
 import retrofit2.http.GET;
 
 /**
- * @author reh4512
+ * @author Sven Rehfuﬂ
  *
  */
 public class RestHandler {
@@ -90,7 +93,7 @@ public class RestHandler {
 		return retVal;
 	}
 	
-	public List<RestItem> getAllItems() throws Exception {
+	public ObservableList<OpenhabItem> getAllItems() throws Exception {
 		Call<List<RestItem>> allItemsCall = openhabJsonService.getAllItems();
 		
 		Response<List<RestItem>> callResponse;
@@ -99,6 +102,13 @@ public class RestHandler {
 				throw new Exception("Unknow error, but the response was unseccessful.");
 			}
 			
-			return callResponse.body();
+			ObservableList<OpenhabItem> openhabItemList = FXCollections.observableArrayList();
+			
+			for (RestItem item : callResponse.body()) {
+				OpenhabItem itemToAdd = new OpenhabItem(item);
+				openhabItemList.add(itemToAdd);
+			}
+			
+			return openhabItemList;
 	}
 }

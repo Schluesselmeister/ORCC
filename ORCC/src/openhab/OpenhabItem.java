@@ -20,6 +20,7 @@ public class OpenhabItem {
 	private ReadOnlyStringWrapper id;
 	private SimpleStringProperty type;
 	private SimpleStringProperty category;
+	private SimpleStringProperty state;
 	
 	
 	
@@ -31,6 +32,11 @@ public class OpenhabItem {
 			id = new ReadOnlyStringWrapper(this, "id", restItem.getName());
 			type = new SimpleStringProperty(this, "type", restItem.getType());
 			category = new SimpleStringProperty(this, "category", restItem.getCategory());
+			if (!restItem.getState().equals("NULL")) {
+				state  = new SimpleStringProperty(this, "state", restItem.getState());
+			} else {
+				state = new SimpleStringProperty(this, "state", "");
+			}
 		}
 	}
 	
@@ -46,6 +52,9 @@ public class OpenhabItem {
 	}
 	public SimpleStringProperty categoryProperty() {
 		return category;
+	}
+	public SimpleStringProperty stateProperty() {
+		return state;
 	}
 	
 	public RestItem getRestItem() {

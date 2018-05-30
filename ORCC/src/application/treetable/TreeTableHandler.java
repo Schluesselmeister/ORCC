@@ -43,7 +43,7 @@ public class TreeTableHandler {
 	 */
 	public TreeTableHandler(TreeTableView<OpenhabItem> navTree, ObservableList<OpenhabItem> allItemsObservable) {
 		this.navTree = navTree;
-		this.allItems = new FilteredList<OpenhabItem>(allItemsObservable,null);
+		this.allItems = new FilteredList<OpenhabItem>(allItemsObservable);
 
 		navTree.editableProperty().set(true);
 		
@@ -62,27 +62,51 @@ public class TreeTableHandler {
 
 		TreeTableColumn<OpenhabItem,String> stateCol = new TreeTableColumn<>("State");
 		
+		createTree();
+	
+		nameCol.setCellValueFactory(new TreeItemPropertyValueFactory<OpenhabItem,String>("name"));
+		idCol.setCellValueFactory(new TreeItemPropertyValueFactory<OpenhabItem,String>("id"));
+		typeCol.setCellValueFactory(new TreeItemPropertyValueFactory<OpenhabItem,String>("type"));
+		categoryCol.setCellValueFactory(new TreeItemPropertyValueFactory<OpenhabItem,String>("category"));
+		stateCol.setCellValueFactory(new TreeItemPropertyValueFactory<OpenhabItem,String>("state"));
+
+		navTree.getColumns().setAll(nameCol, idCol, typeCol, categoryCol, stateCol);
+	}
+	
+	public void setTextFilter(String localTextFilter) {
+		textFilter = localTextFilter.toLowerCase();
+		refreshFilter();
+	}
+
+	
+	private void createTree() {
 		TreeItem<OpenhabItem> root = new TreeItem<>(new OpenhabItem(null));
-		navTree.setRoot(root);
 		
 		for (OpenhabItem oneItem : allItems) {
 			TreeItem<OpenhabItem> oneTreeItem = new TreeItem<OpenhabItem>(oneItem);
 			root.getChildren().add(oneTreeItem);
 		}
-
-		nameCol.setCellValueFactory(new TreeItemPropertyValueFactory("name"));
-		idCol.setCellValueFactory(new TreeItemPropertyValueFactory("id"));
-		typeCol.setCellValueFactory(new TreeItemPropertyValueFactory("type"));
-		categoryCol.setCellValueFactory(new TreeItemPropertyValueFactory("category"));
-		stateCol.setCellValueFactory(new TreeItemPropertyValueFactory("state"));
-
-		navTree.getColumns().setAll(nameCol, idCol, typeCol, categoryCol, stateCol);
+		navTree.setRoot(root);
+	}
+	
+	private void refreshFilter() {
+		allItems.setPredicate( item -> {
+			boolean retVal = false;
+			
+			if (!textFilter.isEmpty()) {
+				// text filter has been set.
+				if (item.nameProperty().getValueSafe().toLowerCase().contains(textFilter) || item.idProperty().getValueSafe().toLowerCase().contains(textFilter) ||
+						item.categoryProperty().getValueSafe().toLowerCase().contains(textFilter)	) {
+					retVal = true;
+				}
+			} else {
+				// no text filter
+				retVal = true;
+			}
+			
+			return retVal;
+		});
 		
+		createTree();
 	}
-	
-	
-	public void setTextFilter(String filterText) {
-		// TODO: add free text filtering
-	}
-	
 }

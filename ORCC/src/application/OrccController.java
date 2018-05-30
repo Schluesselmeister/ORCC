@@ -11,12 +11,16 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Cursor;
 import javafx.scene.control.MenuBar;
+import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.TreeTableView;
 import javafx.scene.control.TreeView;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
@@ -39,6 +43,17 @@ public class OrccController implements Initializable {
 	
 	@FXML
 	private TreeTableView<OpenhabItem> navTree;
+	
+	@FXML
+	private TextField filterTextField;
+	
+	@FXML
+	private Button filterActionButton;
+	@FXML
+	private Button filterClearButton;
+	
+	@FXML
+	private Text connectedInfoField;
 	
 	/**
 	 * The Openhab server address.
@@ -113,6 +128,7 @@ public class OrccController implements Initializable {
 					Platform.runLater(new Runnable() {
 						@Override
 						public void run() {
+							connectedInfoField.setText("DISCONNECTED");
 							mainPane.setCursor(Cursor.DEFAULT);
 							Alert alertDialog = new Alert(AlertType.ERROR);
 							alertDialog.setHeaderText(null);
@@ -126,6 +142,7 @@ public class OrccController implements Initializable {
 					isConnected = true;
 
 					try {
+						connectedInfoField.setText("CONNECTED");
 						allItems = restHandler.getAllItems();
 						Platform.runLater(new Runnable() {
 							@Override
@@ -139,6 +156,7 @@ public class OrccController implements Initializable {
 						Platform.runLater(new Runnable() {
 							@Override
 							public void run() {
+								connectedInfoField.setText("DISCONNECTED");
 								mainPane.setCursor(Cursor.DEFAULT);
 								Alert alertDialog = new Alert(AlertType.ERROR);
 								alertDialog.setHeaderText(null);
@@ -165,5 +183,29 @@ public class OrccController implements Initializable {
 		String serverUrl = preferences.get(Constants.ServerUrlPref,"http://localhost:8080/rest/");
 		this.serverUrl = serverUrl;
 		restHandler = new RestHandler(this.serverUrl);
+		filterTextField.textProperty().addListener((obj, oldVal, newVal) -> {
+			handleFilterButton();
+		});
 	}   
+
+	
+	/*
+	 * Handle the filter button CLEAR
+	 */
+	@FXML
+	private void handleFilterClearButton() {
+		filterTextField.setText("");
+		treeTableHandler.setTextFilter("");
+	}
+
+	/*
+	 * Handle the filter button FILTER
+	 */
+	@FXML
+	private void handleFilterButton() {
+		String localString = filterTextField.getText();
+		if (localString != null ) {
+			treeTableHandler.setTextFilter(localString);
+		}
+	}
 }

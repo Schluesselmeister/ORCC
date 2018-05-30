@@ -22,9 +22,6 @@ public class OpenhabItem {
 	private SimpleStringProperty category;
 	private SimpleStringProperty state;
 	
-	
-	
-	
 	public OpenhabItem(RestItem restItem) {
 		if (restItem != null) {
 			this.restItem = restItem;

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+import application.treetable.ControlTreeHandler;
 import application.treetable.TreeTableHandler;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -86,6 +87,11 @@ public class OrccController implements Initializable {
 	private TreeTableHandler treeTableHandler;
 	
 	/**
+	 * Control tree handler
+	 */
+	private ControlTreeHandler controlTreeHandler;
+	
+	/**
 	 * The list of all Openhab items.
 	 */
 	ObservableList<OpenhabItem> allItems;
@@ -148,6 +154,7 @@ public class OrccController implements Initializable {
 							@Override
 							public void run() {
 								treeTableHandler = new TreeTableHandler(navTree, allItems); 
+								controlTreeHandler = new ControlTreeHandler(controlTree, treeTableHandler);
 								mainPane.setCursor(Cursor.DEFAULT);
 							}
 						});

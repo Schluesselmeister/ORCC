@@ -21,6 +21,10 @@ import openhab.RestItem;
  *
  */
 public class TreeTableHandler {
+	
+	public final static int GROUP = 0;
+	public final static int TYPE = 1;
+	
 	/**
 	 * The tree view.
 	 */

@@ -93,7 +93,7 @@ public class RestHandler {
 		return retVal;
 	}
 	
-	public ObservableList<OpenhabItem> getAllItems() throws Exception {
+	public ArrayList<OpenhabItem> getAllItems() throws Exception {
 		Call<List<RestItem>> allItemsCall = openhabJsonService.getAllItems();
 		
 		Response<List<RestItem>> callResponse;
@@ -102,7 +102,7 @@ public class RestHandler {
 				throw new Exception("Unknow error, but the response was unseccessful.");
 			}
 			
-			ObservableList<OpenhabItem> openhabItemList = FXCollections.observableArrayList();
+			ArrayList<OpenhabItem> openhabItemList = new ArrayList<OpenhabItem>();
 			
 			for (RestItem item : callResponse.body()) {
 				OpenhabItem itemToAdd = new OpenhabItem(item);

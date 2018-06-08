@@ -24,6 +24,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import nz.net.ultraq.preferences.xml.XmlPreferences;
@@ -94,7 +95,7 @@ public class OrccController implements Initializable {
 	/**
 	 * The list of all Openhab items.
 	 */
-	ObservableList<OpenhabItem> allItems;
+	ObservableList<OpenhabItem> allItems = FXCollections.observableArrayList();
 	
 	/**
 	 * Enter the Openhab server URL in a modal dialog
@@ -149,12 +150,10 @@ public class OrccController implements Initializable {
 
 					try {
 						connectedInfoField.setText("CONNECTED");
-						allItems = restHandler.getAllItems();
+						allItems.addAll(restHandler.getAllItems());
 						Platform.runLater(new Runnable() {
 							@Override
 							public void run() {
-								treeTableHandler = new TreeTableHandler(navTree, allItems); 
-								controlTreeHandler = new ControlTreeHandler(controlTree, treeTableHandler);
 								mainPane.setCursor(Cursor.DEFAULT);
 							}
 						});
@@ -190,6 +189,10 @@ public class OrccController implements Initializable {
 		String serverUrl = preferences.get(Constants.ServerUrlPref,"http://localhost:8080/rest/");
 		this.serverUrl = serverUrl;
 		restHandler = new RestHandler(this.serverUrl);
+		treeTableHandler = new TreeTableHandler(navTree, allItems); 
+		controlTreeHandler = new ControlTreeHandler(controlTree);
+		allItems.addListener(treeTableHandler);
+		allItems.addListener(controlTreeHandler);
 		filterTextField.textProperty().addListener((obj, oldVal, newVal) -> {
 			handleFilterButton();
 		});

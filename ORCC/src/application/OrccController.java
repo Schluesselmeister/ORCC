@@ -151,6 +151,7 @@ public class OrccController implements Initializable {
 					try {
 						connectedInfoField.setText("CONNECTED");
 						allItems.addAll(restHandler.getAllItems());
+//						restHandler.subscribeToSSE();
 						Platform.runLater(new Runnable() {
 							@Override
 							public void run() {

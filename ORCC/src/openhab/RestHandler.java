@@ -4,9 +4,12 @@
 package openhab;
 
 import java.io.IOException;
+import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.launchdarkly.eventsource.EventSource;
 
 import application.FakeInterceptor;
 import javafx.collections.FXCollections;
@@ -47,6 +50,16 @@ public class RestHandler {
 	private final OpenhabTextService openhabTextService;
 	
 	/**
+	 * The event handler
+	 */
+	private OpenhabEventHandler openhabEventHandler;
+	
+	/**
+	 * The Openhab event source object.
+	 */
+	EventSource eventSource;
+	
+	/**
 	 * Definition of all REST services returning JSON data. 
 	 * @author Sven Rehfuﬂ
 	 */
@@ -72,6 +85,10 @@ public class RestHandler {
 
 		openhabJsonService = jsonRetrofit.create(OpenhabJsonService.class);
 		openhabTextService = textRetrofit.create(OpenhabTextService.class);
+
+		EventSource.Builder builder = new EventSource.Builder(openhabEventHandler, URI.create(serverUrl+"/events"));
+//		eventSource = builder.build();
+//		eventSource.setReconnectionTimeMs(3000);
 	}
 
 	
@@ -93,6 +110,11 @@ public class RestHandler {
 		return retVal;
 	}
 	
+	/**
+	 * Get all available Openhab items
+	 * @return The list of Openhab items
+	 * @throws Exception
+	 */
 	public ArrayList<OpenhabItem> getAllItems() throws Exception {
 		Call<List<RestItem>> allItemsCall = openhabJsonService.getAllItems();
 		
@@ -111,4 +133,9 @@ public class RestHandler {
 			
 			return openhabItemList;
 	}
+	
+	public void subscribeToSSE() {
+		eventSource.start();
+	}
+	
 }

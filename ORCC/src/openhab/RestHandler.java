@@ -86,9 +86,9 @@ public class RestHandler {
 		openhabJsonService = jsonRetrofit.create(OpenhabJsonService.class);
 		openhabTextService = textRetrofit.create(OpenhabTextService.class);
 
-		EventSource.Builder builder = new EventSource.Builder(openhabEventHandler, URI.create(serverUrl+"/events"));
-//		eventSource = builder.build();
-//		eventSource.setReconnectionTimeMs(3000);
+		EventSource.Builder builder = new EventSource.Builder(openhabEventHandler, URI.create(serverUrl+"events"));
+		eventSource = builder.build();
+		eventSource.setReconnectionTimeMs(3000);
 	}
 
 	

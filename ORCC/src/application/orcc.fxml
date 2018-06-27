@@ -46,7 +46,7 @@
 					<Button text="Filter" fx:id="filterActionButton" onAction="#handleFilterButton"/>
 					<Button text="Clear" fx:id="filterClearButton" onAction="#handleFilterClearButton"/>
 				</HBox>
-				<TreeView fx:id="controlTree" />
+				<TreeView fx:id="controlTree" showRoot="false"/>
 			</children>
 		</VBox>
 	</left>

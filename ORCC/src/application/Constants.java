@@ -9,8 +9,8 @@ package application;
  */
 public class Constants {
 
-	public static final String ServerUrlPref = "server_url";
-	
+	public static final String SERVER_URL_PREF = "server_url";
+	public static final String OPENHAB_GROUP_TYPE = "Group";
 	
 	
 }

@@ -113,7 +113,7 @@ public class OrccController implements Initializable {
 
 		Optional<String> local_serverUrl = serverUrlDialog.showAndWait();
 		if (local_serverUrl.isPresent()) {
-			preferences.put(Constants.ServerUrlPref, local_serverUrl.get());
+			preferences.put(Constants.SERVER_URL_PREF, local_serverUrl.get());
 			preferences.flush();
 			serverUrl = local_serverUrl.get();
 		}
@@ -187,7 +187,7 @@ public class OrccController implements Initializable {
 	public void initialize(java.net.URL arg0, ResourceBundle arg1) {
 		menuBar.setFocusTraversable(true);
 		preferences = new XmlPreferences(new XmlPreferencesFile("settings"));
-		String serverUrl = preferences.get(Constants.ServerUrlPref,"http://localhost:8080/rest/");
+		String serverUrl = preferences.get(Constants.SERVER_URL_PREF,"http://localhost:8080/rest/");
 		this.serverUrl = serverUrl;
 		restHandler = new RestHandler(this.serverUrl);
 		treeTableHandler = new TreeTableHandler(navTree, allItems); 
